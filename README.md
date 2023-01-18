@@ -17,7 +17,7 @@ System requirements
 
 Known Bugs
 ---------------
-None
+Recently fixed multilingual metadata bug. Also fixed bug that prevented subtitles from being displayed.
 
 Installation
 -------------

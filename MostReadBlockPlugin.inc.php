@@ -163,6 +163,7 @@ class MostReadBlockPlugin extends BlockPlugin {
 		    $articles[$submissionId]['journalPath'] = $journal->getPath();
 		    $articles[$submissionId]['articleId'] = $article->getBestArticleId();
 		    $articles[$submissionId]['articleTitle'] = $article->getLocalizedTitle();
+		    $articles[$submissionId]['articleSubTitle'] = $article->getLocalizedSubTitle();
 		    $articles[$submissionId]['metric'] = $resultRecord[STATISTICS_METRIC];
 		}
 		$cache->setEntireCache($articles);

@@ -31,4 +31,4 @@ The plugin is developed by The Federation of Finnish Learned Societies and is re
 
 Contributions
 -------
-@zielaq
+@zielaq, @edersotto (OJSBR)

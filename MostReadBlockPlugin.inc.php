@@ -100,6 +100,7 @@ class MostReadBlockPlugin extends BlockPlugin {
 		if (!$context) return '';
 
 		$metricsDao = DAORegistry::getDAO('MetricsDAO');
+	
 		
 		$cacheManager = CacheManager::getManager();
 		$cache = $cacheManager->getCache($context->getId(), 'mostread' , array($this, '_cacheMiss'));
@@ -115,8 +116,11 @@ class MostReadBlockPlugin extends BlockPlugin {
 
 		$mostReadBlockTitle = unserialize($this->getSetting($context->getId(), 'mostReadBlockTitle'));
 		$locale = AppLocale::getLocale();
+		
+		
 		$blockTitle = $mostReadBlockTitle[$locale] ? $mostReadBlockTitle[$locale] : __('plugins.blocks.mostRead.settings.blockTitle');
 		$templateMgr->assign('blockTitle', $blockTitle);
+		$templateMgr->assign('locale', $locale);
 
 		return parent::getContents($templateMgr, $request);
 	}
@@ -127,6 +131,7 @@ class MostReadBlockPlugin extends BlockPlugin {
 	 */
 	
 	function _cacheMiss($cache) {
+	
 		$submissionDao = DAORegistry::getDAO('SubmissionDAO'); /* @var $submissionDao SubmissionDAO */
 		
 		$journalDao = DAORegistry::getDAO('JournalDAO');
@@ -156,14 +161,22 @@ class MostReadBlockPlugin extends BlockPlugin {
 		$result = $metricsDao->getMetrics(OJS_METRIC_TYPE_COUNTER, $column, $filter, $orderBy, $dbResultRange);
 		
 		foreach ($result as $resultRecord) {
-				$submissionId = $resultRecord[STATISTICS_DIMENSION_SUBMISSION_ID];
-				$article = $submissionDao->getById($submissionId);
-				
+			$submissionId = $resultRecord[STATISTICS_DIMENSION_SUBMISSION_ID];
+			$article = $submissionDao->getById($submissionId);
+			
 		    $journal = $journalDao->getById($article->getJournalId());
+		   
+			$locales = $journal->getSupportedLocaleNames();
+
 		    $articles[$submissionId]['journalPath'] = $journal->getPath();
 		    $articles[$submissionId]['articleId'] = $article->getBestArticleId();
-		    $articles[$submissionId]['articleTitle'] = $article->getLocalizedTitle();
-		    $articles[$submissionId]['articleSubTitle'] = $article->getLocalizedSubTitle();
+		    
+			foreach ($locales as $key => $val) {
+				
+				$articles[$submissionId]['title'][$key] = $article->getTitle($key);
+				$articles[$submissionId]['subTitle'][$key] = $article->getSubTitle($key);
+			}
+			
 		    $articles[$submissionId]['metric'] = $resultRecord[STATISTICS_METRIC];
 		}
 		$cache->setEntireCache($articles);

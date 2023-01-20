@@ -67,7 +67,7 @@ class MostReadBlockPlugin extends BlockPlugin {
 	 */
 	function manage($args, $request) {
 		$this->import('MostReadSettingsForm');
-		$context = Application::getRequest()->getContext();
+		$context = Application::get()->getRequest()->getContext();
 		$contextId = ($context && isset($context) && $context->getId()) ? $context->getId() : CONTEXT_SITE;
 		switch($request->getUserVar('verb')) {
 			case 'settings':

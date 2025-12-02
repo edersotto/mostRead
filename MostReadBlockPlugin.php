@@ -131,10 +131,14 @@ class MostReadBlockPlugin extends BlockPlugin {
 			$cache->flush();
 		}
 
+		$mostReadBlockTitleSetting = json_decode(
+			$this->getSetting($context->getId(), 'mostReadBlockTitle'),
+			true
+		) ?: null;
+
 		$locale = AppLocale::getLocale();
-		$mostReadBlockTitle = (array) json_decode($this->getSetting($context->getId(), 'mostReadBlockTitle'));
-		$blockTitle = $mostReadBlockTitle[$locale] ? $mostReadBlockTitle[$locale] : "";
-		$templateMgr->assign('blockTitle', $blockTitle);
+		$mostReadBlockTitle = $mostReadBlockTitleSetting[$locale] ?? null;
+		$templateMgr->assign('blockTitle', $mostReadBlockTitle);
 
 		$mostRead = [];
 		foreach($metrics as $metric){
